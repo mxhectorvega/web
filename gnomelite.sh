@@ -16,13 +16,15 @@ sleep 2
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
 clear
 echo "" 
-pacman -Sy cowsay --noconfirm 
-clear 
-echo -e "" 
-echo -e "" 
-echo -e "" 
-echo -e "" 
-cowsay -d paypal.me/hivz 
+echo "" 
+echo -e " ________________            "
+echo -e "< paypal.me/hivz >           "
+echo -e " ----------------            "
+echo -e "        \   ^__^             "
+echo -e "         \  (xx)\_______     "
+echo -e "            (__)\       )\/\ "
+echo -e "             U  ||----w |    "
+echo -e "                ||     ||    "
 sleep 3 
 echo -e "" 
 echo -e "" 
@@ -44,7 +46,7 @@ echo -e "Este script es un fork de CrisParch by @codigocristo"
 sleep 1  
 echo -e ""  
 echo -e "Puedes contribuir en paypal.me/hivz"  
-sleep 13 
+sleep 10
 echo -e ""  
 echo -e "Ejecutando..."  
 sleep 2  
@@ -69,16 +71,13 @@ sleep 1
 clear 
 echo "" 
 printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' _ 
-echo "print devices" | parted | grep /dev/ | awk '{if (NR!=1) {print}}' 
+echo "" 
+echo "print devices" | parted | grep /dev/ | awk '{if (NR!=1) {print}}' | sed '/sr/d'
+echo "" 
+printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' _ 
 echo "" 
 echo "" 
-read -p "$(echo -e "1.- Introduce tu unidad de almacenamiento para instalar Arch: ")" disco 
-echo "" 
-echo "" 
-read -p "$(echo -e "2.- Introduce el nombre del equipo y/o computador (host): ")" hostname 
-echo "" 
-echo "" 
-read -p "$(echo -e "3.- Introduce la clave root: ")" rootpasswd 
+read -p "$(echo -e "1.- Introduce tu unidad de almacenamiento para instalar Arch - /dev/sdX : ")" disco 
 echo "" 
 echo "" 
 read -p "$(echo -e "4.- Introduce el nombre de tu nuevo usuario: ")" user 
@@ -87,7 +86,11 @@ echo ""
 read -p "$(echo -e "5.- Introduce la contraseña para $user: ")" userpasswd 
 echo "" 
 echo "" 
-read -p "$(echo -e "6.- Introduce tu ubicación, ejemplo: es_MX.UTF-8: ")" userpais 
+read -p "$(echo -e "2.- Introduce el nombre del equipo y/o computador (host): ")" hostname 
+echo "" 
+echo "" 
+read -p "$(echo -e "3.- Introduce la clave root: ")" rootpasswd 
+echo "" 
 echo "" 
 echo "" 
 read -p "$(echo -e "7.- Introduce la distribución de tu teclado, ejemplo es, latam, us: ")" teclado 
@@ -329,6 +332,8 @@ sed -i "82c %wheel ALL=(ALL) NOPASSWD: ALL"  /mnt/etc/sudoers
 # Configuración de idioma 
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
 
+userpais=$(echo $(curl https://ipapi.co/languages | awk -F "," '{print $1}' | sed  "s/-/_/g").UTF-8)
+
 clear 
 echo -e "" 
 echo -e "\t\t\t| Actualizando idioma del SO |" 
@@ -346,7 +351,10 @@ arch-chroot /mnt /bin/bash -c "export $(cat /mnt/etc/locale.conf)"
 export $(cat /mnt/etc/locale.conf) 
 arch-chroot /mnt /bin/bash -c "sudo -u $user export $(cat /etc/locale.conf)" 
 export $(cat /mnt/etc/locale.conf) 
-arch-chroot /mnt /bin/bash -c "ln -sf /usr/share/zoneinfo/$(curl https://ipapi.co/timezone) /etc/localtime" 
+
+userzone=$(curl https://ipapi.co/timezone)
+clear
+arch-chroot /mnt /bin/bash -c "ln -sf /usr/share/zoneinfo/${userzone} /etc/localtime" 
   
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
 # Configuración de reloj 
@@ -355,7 +363,7 @@ clear
 echo "" 
 echo "Ajustando horario..." 
 sleep 1 
-arch-chroot /mnt /bin/bash -c "timedatectl set-timezone $(curl https://ipapi.co/timezone)" 
+arch-chroot /mnt /bin/bash -c "timedatectl set-timezone ${userzone}" 
 arch-chroot /mnt /bin/bash -c "pacman -S ntp --noconfirm" 
 arch-chroot /mnt /bin/bash -c "ntpd -qg" 
 arch-chroot /mnt /bin/bash -c "hwclock --systohc" 
@@ -368,8 +376,11 @@ clear
 echo "" 
 echo "Instalando Kernel..." 
 sleep 2 
-arch-chroot /mnt /bin/bash -c "pacman -S linux-firmware linux linux-headers mkinitcpio --noconfirm" 
-  
+arch-chroot /mnt /bin/bash -c "pacman -S linux-firmware --noconfirm" 
+arch-chroot /mnt /bin/bash -c "pacman -S linux --noconfirm" 
+arch-chroot /mnt /bin/bash -c "pacman -S linux-headers --noconfirm" 
+arch-chroot /mnt /bin/bash -c "pacman -S mkinitcpio --noconfirm" 
+
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
 # Instalación del Grub-EFI/UEFI 
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
@@ -409,7 +420,7 @@ else
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
 arch-chroot /mnt /bin/bash -c "pacman -S grub os-prober ntfs-3g --noconfirm" 
 echo ''  
-arch-chroot /mnt /bin/bash -c "grub-install --target=i386-pc $disco" 
+arch-chroot /mnt /bin/bash -c "grub-install --target=i386-pc ${disco}" 
 
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
 # Enviar parámetros al Grub 
@@ -433,7 +444,11 @@ clear
 echo "" 
 echo "Instalando drivers de red..." 
 sleep 1 
-arch-chroot /mnt /bin/bash -c "pacman -S dhcpcd networkmanager iwd net-tools ifplugd --noconfirm" 
+arch-chroot /mnt /bin/bash -c "pacman -S dhcpcd --noconfirm" 
+arch-chroot /mnt /bin/bash -c "pacman -S networkmanager --noconfirm" 
+arch-chroot /mnt /bin/bash -c "pacman -S iwd --noconfirm" 
+arch-chroot /mnt /bin/bash -c "pacman -S net-tools --noconfirm" 
+arch-chroot /mnt /bin/bash -c "pacman -S ifplugd --noconfirm" 
 
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
 # Instalación de drivers wifi 
@@ -442,7 +457,11 @@ clear
 echo "" 
 echo "Instalando drivers de wifi" 
 sleep 1 
-arch-chroot /mnt /bin/bash -c "pacman -S iw wireless_tools wpa_supplicant dialog wireless-regdb --noconfirm" 
+arch-chroot /mnt /bin/bash -c "pacman -S iw --noconfirm" 
+arch-chroot /mnt /bin/bash -c "pacman -S wireless_--noconfirm" 
+arch-chroot /mnt /bin/bash -c "pacman -S wpa_supplicant --noconfirm" 
+arch-chroot /mnt /bin/bash -c "pacman -S dialog --noconfirm" 
+arch-chroot /mnt /bin/bash -c "pacman -S wireless-regdb --noconfirm" 
 
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
 # Instalación de drivers bluetooth 
@@ -451,7 +470,8 @@ clear
 echo "" 
 echo "Instalando drivers bluetooth" 
 sleep 1 
-arch-chroot /mnt /bin/bash -c "pacman -S bluez bluez-utils --noconfirm" 
+arch-chroot /mnt /bin/bash -c "pacman -S bluez --noconfirm" 
+arch-chroot /mnt /bin/bash -c "pacman -S bluez-utils --noconfirm" 
 
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
 # Configuración de red 
@@ -459,7 +479,8 @@ arch-chroot /mnt /bin/bash -c "pacman -S bluez bluez-utils --noconfirm"
 echo "" 
 echo "Ajustando parametros de red..." 
 sleep 1 
-arch-chroot /mnt /bin/bash -c "systemctl enable dhcpcd NetworkManager ntpd" 
+arch-chroot /mnt /bin/bash -c "systemctl enable dhcpcd.service" 
+arch-chroot /mnt /bin/bash -c "systemctl enable NetworkManager.service" 
 arch-chroot /mnt /bin/bash -c "systemctl enable bluetooth.service" 
 echo "noipv6rs" >> /mnt/etc/dhcpcd.conf 
 echo "noipv6" >> /mnt/etc/dhcpcd.conf 
@@ -471,7 +492,11 @@ clear
 echo "" 
 echo "Instalando shell ZSH y sus paquetes adicionales..." 
 sleep 1 
-arch-chroot /mnt /bin/bash -c "pacman -S zsh-theme-powerlevel10k zsh-autosuggestions zsh-history-substring-search zsh-completions zsh-syntax-highlighting --noconfirm" 
+arch-chroot /mnt /bin/bash -c "pacman -S zsh-theme-powerlevel10k --noconfirm" 
+arch-chroot /mnt /bin/bash -c "pacman -S zsh-autosuggestions --noconfirm" 
+arch-chroot /mnt /bin/bash -c "pacman -S zsh-history-substring-search --noconfirm" 
+arch-chroot /mnt /bin/bash -c "pacman -S zsh-completions --noconfirm" 
+arch-chroot /mnt /bin/bash -c "pacman -S zsh-syntax-highlighting --noconfirm" 
 
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
 # Instalación de servidor X 
@@ -489,18 +514,69 @@ clear
 echo "" 
 echo "Instalando utilidades del sistema..." 
 sleep 1 
-arch-chroot /mnt /bin/bash -c "pacman -S python-pillow file-roller kitty mpv firefox telegram-desktop pcmanfm imv zathura mupdf neofetch ranger neovim htop --noconfirm"
-arch-chroot /mnt /bin/bash -c "pacman -S git python-pip wget neofetch lsb-release xdg-user-dirs --noconfirm"
-arch-chroot /mnt /bin/bash -c "pacman -S papirus-icon-theme materia-gtk-theme --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S python-pillow --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S file-roller --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S kitty --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S mpv --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S firefox --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S telegram-desktop --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S pcmanfm --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S imv --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S zathura --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S mupdf --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S neofetch --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S ranger --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S neovim --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S htop --noconfirm"
+
+arch-chroot /mnt /bin/bash -c "pacman -S git  --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S python-pip --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S wget --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S lsb-release --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S xdg-user-dirs --noconfirm"
+
+
+arch-chroot /mnt /bin/bash -c "pacman -S papirus-icon-theme --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S materia-gtk-theme --noconfirm"
 echo "Temas instalados"
 sleep 3
-arch-chroot /mnt /bin/bash -c "sudo pacman -S grub-btrfs snapper --noconfirm"
+arch-chroot /mnt /bin/bash -c "sudo pacman -S grub-btrfs --noconfirm"
+arch-chroot /mnt /bin/bash -c "sudo pacman -S snapper --noconfirm"
 echo "snapper instalado"
 sleep 3
 arch-chroot /mnt /bin/bash -c "xdg-user-dirs-update" 
 arch-chroot /mnt /bin/bash -c "ls -l /home/$user"
-arch-chroot /mnt /bin/bash -c "pacman -S msmtp libmtp libcddb gvfs gvfs-afc gvfs-smb gvfs-gphoto2 gvfs-mtp gvfs-goa gvfs-nfs gvfs-google dosfstools jfsutils f2fs-tools btrfs-progs exfat-utils ntfs-3g reiserfsprogs udftools xfsprogs nilfs-utils polkit gpart mtools --noconfirm"
-arch-chroot /mnt /bin/bash -c "pacman -S ttf-{dejavu,hack,roboto,liberation} wqy-microhei bdf-unifont unicode-character-database noto-fonts-emoji --noconfirm"
+sleep 5
+clear
+arch-chroot /mnt /bin/bash -c "pacman -S msmtp --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S libmtp --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S libcddb --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S gvfs --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S gvfs-afc --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S gvfs-smb --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S gvfs-gphoto2 --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S gvfs-mtp --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S gvfs-goa --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S gvfs-nfs --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S gvfs-google --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S dosfstools --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S f2fs-tools --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S btrfs-progs --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S exfat-utils --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S ntfs-3g --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S reiserfsprogs --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S udftools --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S xfsprogs --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S nilfs-utils --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S polkit --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S gpart --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S mtools --noconfirm"
+
+arch-chroot /mnt /bin/bash -c "pacman -S ttf-{dejavu,hack,roboto,liberation} --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S wqy-microhei --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S bdf-unifont --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S unicode-character-database --noconfirm"
+arch-chroot /mnt /bin/bash -c "pacman -S noto-fonts-emoji --noconfirm"
 
 sleep 2 
 echo "Se termino de instalar el software del usuario!"
@@ -551,8 +627,13 @@ clear
 echo "" 
 echo "Instalando pipewire audio..." 
 sleep 1 
-arch-chroot /mnt /bin/bash -c "pacman -S pipewire gst-plugin-pipewire pipewire-alsa pipewire-jack pipewire-media-session pipewire-zeroconf --noconfirm" 
-  
+arch-chroot /mnt /bin/bash -c "pacman -S pipewire --noconfirm" 
+arch-chroot /mnt /bin/bash -c "pacman -S gst-plugin-pipewire --noconfirm" 
+arch-chroot /mnt /bin/bash -c "pacman -S pipewire-alsa --noconfirm" 
+arch-chroot /mnt /bin/bash -c "pacman -S pipewire-jack --noconfirm" 
+arch-chroot /mnt /bin/bash -c "pacman -S pipewire-media-session --noconfirm" 
+arch-chroot /mnt /bin/bash -c "pacman -S pipewire-zeroconf --noconfirm" 
+
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
 # Configuración de teclado 
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
@@ -568,7 +649,8 @@ esac
 echo "KEYMAP=$teclado_tty" > /mnt/etc/vconsole.conf 
 cat /mnt/etc/vconsole.conf  
 clear 
-	arch-chroot /mnt /bin/bash -c "localectl --no-convert set-x11-keymap "$teclado""  
+	arch-chroot /mnt /bin/bash -c "localectl --no-convert set-x11-keymap ${teclado}"
+	clear
 	echo -e 'Section "InputClass"' > /mnt/etc/X11/xorg.conf.d/00-keyboard.conf 
 	echo -e 'Identifier "system-keyboard"' >> /mnt/etc/X11/xorg.conf.d/00-keyboard.conf 
 	echo -e 'MatchIsKeyboard "on"' >> /mnt/etc/X11/xorg.conf.d/00-keyboard.conf 
@@ -587,39 +669,118 @@ echo ""
 echo "Se estan instalando los drivers de video..." 
 sleep 3 
 case $(systemd-detect-virt) in 
-	oracle) 
-		grafica="virtualbox-guest-utils xf86-video-vmware virtualbox-host-modules-arch mesa" 
+	oracle)
+		arch-chroot /mnt /bin/bash -c "pacman -S virtualbox-guest-utils --noconfirm" 
+		arch-chroot /mnt /bin/bash -c "pacman -S xf86-video-vmware virtualbox-host-modules-arch mesa --noconfirm" 
+		arch-chroot /mnt /bin/bash -c "pacman -S virtualbox-host-modules-arch mesa --noconfirm" 
+		arch-chroot /mnt /bin/bash -c "pacman -S mesa --noconfirm" 
 	;; 
 	vmware) 
-		grafica="xf86-video-vmware xf86-input-vmmouse open-vm-tools net-tools gtkmm mesa" 
+		arch-chroot /mnt /bin/bash -c "pacman -S xf86-video-vmware --noconfirm"
+		arch-chroot /mnt /bin/bash -c "pacman -S xf86-input-vmmouse --noconfirm"
+		arch-chroot /mnt /bin/bash -c "pacman -S open-vm-tools --noconfirm"
+		arch-chroot /mnt /bin/bash -c "pacman -S net-tools --noconfirm"
+		arch-chroot /mnt /bin/bash -c "pacman -S gtkmm --noconfirm"
+		arch-chroot /mnt /bin/bash -c "pacman -S mesa --noconfirm"
 	;; 
 	qemu) 
-		grafica="spice-vdagent xf86-video-fbdev mesa mesa-libgl qemu-guest-agent" 
+		arch-chroot /mnt /bin/bash -c "pacman -S mesa --noconfirm"
+		arch-chroot /mnt /bin/bash -c "pacman -S mesa-libgl --noconfirm"
+		arch-chroot /mnt /bin/bash -c "pacman -S xf86-video-fbdev --noconfirm"
+		arch-chroot /mnt /bin/bash -c "pacman -S qemu-guest-agent --noconfirm"
+		arch-chroot /mnt /bin/bash -c "pacman -S spice-vdagent --noconfirm"
 	;; 
 	kvm) 
-		grafica="spice-vdagent xf86-video-fbdev mesa mesa-libgl qemu-guest-agent" 
+		arch-chroot /mnt /bin/bash -c "pacman -S mesa --noconfirm"
+		arch-chroot /mnt /bin/bash -c "pacman -S mesa-libgl --noconfirm"
+		arch-chroot /mnt /bin/bash -c "pacman -S xf86-video-fbdev --noconfirm"
+		arch-chroot /mnt /bin/bash -c "pacman -S qemu-guest-agent --noconfirm"
+		arch-chroot /mnt /bin/bash -c "pacman -S spice-vdagent --noconfirm"
 	;; 
 	microsoft) 
-		grafica="xf86-video-fbdev mesa-libgl" 
+		arch-chroot /mnt /bin/bash -c "pacman -S mesa --noconfirm"
+		arch-chroot /mnt /bin/bash -c "pacman -S mesa-libgl --noconfirm"
+		arch-chroot /mnt /bin/bash -c "pacman -S xf86-video-fbdev --noconfirm"
 	;; 
 	xen) 
-		grafica="xf86-video-fbdev mesa-libgl" 
+		arch-chroot /mnt /bin/bash -c "pacman -S mesa --noconfirm"
+		arch-chroot /mnt /bin/bash -c "pacman -S mesa-libgl --noconfirm"
+		arch-chroot /mnt /bin/bash -c "pacman -S xf86-video-fbdev --noconfirm" 
 	;; 
 	*) 
 		if (lspci | grep VGA | grep "NVIDIA\|nVidia" &>/dev/null); then 
-			grafica="xf86-video-nouveau mesa lib32-mesa mesa-vdpau libva-mesa-driver" 
+
+			arch-chroot /mnt /bin/bash -c "pacman -S xf86-video-nouveau --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S mesa --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S lib32-mesa --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S mesa-vdpau --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S libva-mesa-driver --noconfirm"
+
 		elif (lspci | grep VGA | grep "Radeon R\|R2/R3/R4/R5" &>/dev/null); then 
-			grafica="xf86-video-amdgpu mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon mesa-vdpau libva-mesa-driver lib32-mesa-vdpau lib32-libva-mesa-driver libva-vdpau-driver libvdpau-va-gl libva-utils vdpauinfo opencl-mesa clinfo ocl-icd lib32-ocl-icd opencl-headers" 
+
+			arch-chroot /mnt /bin/bash -c "pacman -S xf86-video-amdgpu --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S mesa --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S lib32-mesa --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S vulkan-radeon --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S lib32-vulkan-radeon --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S mesa-vdpau --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S libva-mesa-driver --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S lib32-mesa-vdpau --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S lib32-libva-mesa-driver --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S libva-vdpau-driver --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S libvdpau-va-gl --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S libva-utils --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S vdpauinfo --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S opencl-mesa --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S clinfo --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S ocl-icd --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S lib32-ocl-icd --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S opencl-headers --noconfirm"
+
 		elif (lspci | grep VGA | grep "ATI\|AMD/ATI" &>/dev/null); then 
-			grafica="xf86-video-ati mesa lib32-mesa mesa-vdpau libva-mesa-driver lib32-mesa-vdpau lib32-libva-mesa-driver libva-vdpau-driver libvdpau-va-gl libva-utils vdpauinfo opencl-mesa clinfo ocl-icd lib32-ocl-icd opencl-headers" 
+
+			arch-chroot /mnt /bin/bash -c "pacman -S xf86-video-ati --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S mesa --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S lib32-mesa --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S mesa-vdpau --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S libva-mesa-driver --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S lib32-mesa-vdpau --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S lib32-libva-mesa-driver --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S libva-vdpau-driver --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S libvdpau-va-gl --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S libva-utils --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S vdpauinfo --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S opencl-mesa --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S clinfo --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S ocl-icd --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S lib32-ocl-icd --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S opencl-headers --noconfirm"
+
 		elif (lspci | grep VGA | grep "Intel" &>/dev/null); then 
-			grafica="xf86-video-intel vulkan-intel mesa lib32-mesa intel-media-driver libva-intel-driver libva-vdpau-driver libvdpau-va-gl libva-utils vdpauinfo intel-compute-runtime clinfo ocl-icd lib32-ocl-icd opencl-headers" 
-		else 
-			grafica="xf86-video-vesa" 
+
+			arch-chroot /mnt /bin/bash -c "pacman -S xf86-video-intel --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S vulkan-intel --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S mesa --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S lib32-mesa --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S intel-media-driver --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S libva-intel-driver --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S libva-vdpau-driver --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S libvdpau-va-gl --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S libva-utils --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S vdpauinfo --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S intel-compute-runtime --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S clinfo --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S ocl-icd --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S lib32-ocl-icd --noconfirm"
+			arch-chroot /mnt /bin/bash -c "pacman -S opencl-headers --noconfirm"
+
+		else
+			
+			arch-chroot /mnt /bin/bash -c "pacman -S xf86-video-vesa --noconfirm"
+
 	fi 
 	;; 
 esac 
-arch-chroot /mnt /bin/bash -c "pacman -S $grafica --noconfirm" 
 sleep 2 
 
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
@@ -629,7 +790,7 @@ clear
 echo "" 
 echo "Instalando el gestor de paquetes Paru..." 
 sleep 2 
-echo "cd && git clone https://aur.archlinux.org/paru && cd paru && makepkg -si --noconfirm && cd && rm -rf paru" | arch-chroot /mnt /bin/bash -c "su $user" 
+echo "cd && git clone https://aur.archlinux.org/paru-bin.git && cd paru-bin && makepkg -si --noconfirm && cd && rm -rf paru-bin" | arch-chroot /mnt /bin/bash -c "su $user" 
 sed -i "82c %wheel ALL=(ALL) ALL"  /mnt/etc/sudoers
 
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
@@ -638,7 +799,10 @@ sed -i "82c %wheel ALL=(ALL) ALL"  /mnt/etc/sudoers
 clear 
 echo "" 
 echo "¡En hora buena, has instalado ArchLinux... suscríbete a youtube.com/mxhectorvega" 
-sleep 4 
+echo ""
+echo ""
+arch-chroot /mnt /bin/bash -c "neofetch"
+sleep 5
 clear 
 echo "Reiniciando..." 
 sleep 1 
