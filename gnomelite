@@ -298,7 +298,9 @@ sed -i 's/#TotalDownload/TotalDownload/g' /mnt/etc/pacman.conf
 sed -i 's/#VerbosePkgLists/VerbosePkgLists/g' /mnt/etc/pacman.conf 
 sed -i "37i ILoveCandy" /mnt/etc/pacman.conf 
 sed -i 's/#[multilib]/[multilib]/g' /mnt/etc/pacman.conf 
-sed -i "s/#Include = /etc/pacman.d/mirrorlist/Include = /etc/pacman.d/mirrorlist/g" /mnt/etc/pacman.conf 
+sed -i "s/#ParallelDownloads/ParallelDownloads = 5/" /etc/pacman.conf
+sed -i "s/#Include = /etc/pacman.d/mirrorlist/Include = /etc/pacman.d/mirrorlist/g" /mnt/etc/pacman.conf
+
   
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
 # Establecer nombre del computador 
