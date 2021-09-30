@@ -72,6 +72,7 @@ clear
 echo "" 
 printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' _ 
 echo "" 
+echo "" 
 echo "print devices" | parted | grep /dev/ | awk '{if (NR!=1) {print}}' | sed '/sr/d'
 echo "" 
 printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' _ 
@@ -602,11 +603,17 @@ sleep 3
 clear 
 echo "" 
 echo "Configurando snapper..." 
-sleep 1 s
+sleep 3
 umount /mnt/.snapshots
 rm -r /mnt/.snapshots
 sleep 8
+clear
 arch-chroot /mnt /bin/bash -c "snapper -c config create-config /"
+arch-chroot /mnt /bin/bash -c "snapper -c config create-config /home/$user"
+echo ""
+echo ""
+# arch-chroot /mnt /bin/bash -c "sudo -u $user snapper -c config create-config /"
+# arch-chroot /mnt /bin/bash -c "snapper -c config create-config /home/$user"
 sleep 8
 cat > /mnt/etc/snapper/configs/config <<EOF
 TIMELINE_MIN_AGE="1800"
@@ -687,15 +694,11 @@ case $(systemd-detect-virt) in
 		arch-chroot /mnt /bin/bash -c "pacman -S mesa --noconfirm"
 		arch-chroot /mnt /bin/bash -c "pacman -S mesa-libgl --noconfirm"
 		arch-chroot /mnt /bin/bash -c "pacman -S xf86-video-fbdev --noconfirm"
-		arch-chroot /mnt /bin/bash -c "pacman -S qemu-guest-agent --noconfirm"
-		arch-chroot /mnt /bin/bash -c "pacman -S spice-vdagent --noconfirm"
 	;; 
 	kvm) 
 		arch-chroot /mnt /bin/bash -c "pacman -S mesa --noconfirm"
 		arch-chroot /mnt /bin/bash -c "pacman -S mesa-libgl --noconfirm"
 		arch-chroot /mnt /bin/bash -c "pacman -S xf86-video-fbdev --noconfirm"
-		arch-chroot /mnt /bin/bash -c "pacman -S qemu-guest-agent --noconfirm"
-		arch-chroot /mnt /bin/bash -c "pacman -S spice-vdagent --noconfirm"
 	;; 
 	microsoft) 
 		arch-chroot /mnt /bin/bash -c "pacman -S mesa --noconfirm"
@@ -775,7 +778,7 @@ case $(systemd-detect-virt) in
 			arch-chroot /mnt /bin/bash -c "pacman -S opencl-headers --noconfirm"
 
 		else
-			
+
 			arch-chroot /mnt /bin/bash -c "pacman -S xf86-video-vesa --noconfirm"
 
 	fi 
