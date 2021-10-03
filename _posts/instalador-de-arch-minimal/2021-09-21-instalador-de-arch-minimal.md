@@ -39,5 +39,5 @@ Despues de la instalacion para cargar las configuraciones de Kitty, Ranger, Neov
 </center>
 
 **Comunidad:**
-- [Canal YouTube](https://youtube.com/mxhectorvega)
+- [Canal YouTube]({{ site.author.youtube }})
 - [Grupo Telegram de ArchLinux](https://t.me/archLinuxes)
