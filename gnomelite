@@ -382,7 +382,8 @@ sleep 2
 arch-chroot /mnt /bin/bash -c "pacman -S linux-firmware --noconfirm" 
 arch-chroot /mnt /bin/bash -c "pacman -S linux --noconfirm" 
 arch-chroot /mnt /bin/bash -c "pacman -S linux-headers --noconfirm" 
-arch-chroot /mnt /bin/bash -c "pacman -S mkinitcpio --noconfirm" 
+arch-chroot /mnt /bin/bash -c "pacman -S mkinitcpio --noconfirm"
+sed -i 's/MODULES=()/MODULES=(brtfs)/' /mnt/etc/mkinitcpio.conf
 
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
 # Instalación del Grub-EFI/UEFI 
@@ -604,19 +605,21 @@ sleep 3
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
 clear 
 echo "" 
+echo "" 
 echo "Configurando snapper..." 
 sleep 3
 umount /mnt/.snapshots
 rm -r /mnt/.snapshots
-sleep 8
-clear
-arch-chroot /mnt /bin/bash -c "snapper -c config create-config /"
+arch-chroot /mnt /bin/bash -c "snapper -c root create-config /"
 arch-chroot /mnt /bin/bash -c "snapper -c config create-config /home/$user"
+arch-chroot /mnt /bin/bash -c "brtfs suvolume delete /mnt/.snapshots"
+#arch-chroot /mnt /bin/bash -c "brtfs suvolume delete /.snapshots"
+arch-chroot /mnt /bin/bash -c "mkdir /mnt/.snapshots"
+mount /mnt/.snapshots
+arch-chroot /mnt /bin/bash -c "chmod 750 /mnt/.snapshots"
 echo ""
 echo ""
-# arch-chroot /mnt /bin/bash -c "sudo -u $user snapper -c config create-config /"
-# arch-chroot /mnt /bin/bash -c "snapper -c config create-config /home/$user"
-sleep 8
+sleep 5
 cat > /mnt/etc/snapper/configs/config <<EOF
 TIMELINE_MIN_AGE="1800"
 TIMELINE_LIMIT_HOURLY="5"
@@ -625,7 +628,15 @@ TIMELINE_LIMIT_WEEKLY="0"
 TIMELINE_LIMIT_MONTHLY="0"
 TIMELINE_LIMIT_YEARLY="0"
 EOF
-arch-chroot /mnt /bin/bash -c "systemctl enable --now snapper-{timeline,cleanup}.timer"
+clear
+echo ""
+echo ""
+sed -i 's/ALLOW_USERS=""/s/ALLOW_USERS="$user"/' /mnt/etc/snapper/configs/root
+clear
+echo ""
+echo ""
+arch-chroot /mnt /bin/bash -c "systemctl enable --now snapper-timeline.timer"
+arch-chroot /mnt /bin/bash -c "systemctl enable --now snapper-cleanup.timer"
 arch-chroot /mnt /bin/bash -c "systemctl enable --now grub-btrfs.path"
 sleep 8
 
