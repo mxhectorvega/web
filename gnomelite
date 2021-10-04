@@ -298,7 +298,7 @@ sed -i 's/#TotalDownload/TotalDownload/g' /mnt/etc/pacman.conf
 sed -i 's/#VerbosePkgLists/VerbosePkgLists/g' /mnt/etc/pacman.conf 
 sed -i "37i ILoveCandy" /mnt/etc/pacman.conf 
 sed -i 's/#[multilib]/[multilib]/g' /mnt/etc/pacman.conf 
-sed -i "s/#ParallelDownloads/ParallelDownloads/" /etc/pacman.conf
+sed -i "s/#ParallelDownloads/ParallelDownloads = 5/" /etc/pacman.conf
 sed -i "s/#Include = /etc/pacman.d/mirrorlist/Include = /etc/pacman.d/mirrorlist/g" /mnt/etc/pacman.conf
 
   
@@ -494,7 +494,7 @@ echo "noipv6" >> /mnt/etc/dhcpcd.conf
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
 clear 
 echo "" 
-echo "Instalando shell ZSH y sus paquetes adicionales..." 
+echo "Instalando shell ZSH y sus paquetes adicionales..."
 sleep 1 
 arch-chroot /mnt /bin/bash -c "pacman -S zsh-theme-powerlevel10k --noconfirm" 
 arch-chroot /mnt /bin/bash -c "pacman -S zsh-autosuggestions --noconfirm" 
