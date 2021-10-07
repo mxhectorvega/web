@@ -30,9 +30,11 @@ Despues de la instalacion para cargar las configuraciones de Kitty, Ranger, Neov
 <img src="https://raw.githubusercontent.com/mxhectorvega/mxhectorvega.github.io/master/_posts/instalador-de-arch-minimal/captura1.jpg" style="max-width:100%;width:auto;height:auto;">
 </center>
 
+
 <center>
 <img src="https://raw.githubusercontent.com/mxhectorvega/mxhectorvega.github.io/master/_posts/instalador-de-arch-minimal/captura2.jpg" style="max-width:100%;width:auto;height:auto;">
 </center>
+
 
 <center>
 <img src="https://raw.githubusercontent.com/mxhectorvega/mxhectorvega.github.io/master/_posts/instalador-de-arch-minimal/captura3.png" style="max-width:100%;width:auto;height:auto;">
