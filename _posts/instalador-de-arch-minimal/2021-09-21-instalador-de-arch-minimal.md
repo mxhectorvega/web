@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Actualización del Script amigable automatizado que instala ArchLinux"
-date:   2021-09-21 07:00:00 +0700
+date:   2021-10-07 14:00:00 +0700
 tags: [archlinux, brtfs, paru, pipewire, gnome, minimal]
 ---
 
