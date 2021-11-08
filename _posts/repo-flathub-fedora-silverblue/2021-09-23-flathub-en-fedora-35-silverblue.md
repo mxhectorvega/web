@@ -17,7 +17,11 @@ En relación al uso regular del sistema inmutable de Fedora SilverBlue, donde la
 **Flathub beta:**
 ``` flatpak remote-add --if-not-exists flathub-beta https://flathub.org/beta-repo/flathub-beta.flatpakrepo ```
 
-Ahora podrás instalar software disponible de Fathub estable ya sea desde GnomeSoftware o desde la terminal con el comando ``` flatpak install nombre_del_paquete ```
+Ahora podrás instalar software disponible de Fathub estable ya sea desde GnomeSoftware o desde la terminal con el comando
+``` flatpak install nombre_del_paquete ```
+
+Tambien buscar paquetes con el comando
+``` flatpak search nombre_del_paquete ```
 
 **Comunidad:**
 - [Canal YouTube](https://youtube.com/mxhectorvega)
