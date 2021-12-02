@@ -7,6 +7,22 @@
 }
 
 // Post title
+  .header-title {
+    font-size: 2em;
+    line-height: 1.2;
+    margin-top: 10px;
+    margin-bottom: 20px;
+
+    &.center {
+      text-align: center;
+    }
+
+    @include media-query($on-mobile) {
+      font-size: 1.9em;
+    }
+  }
+}
+
 .header {
   margin-top: 10px;
   margin-bottom: 1px;
@@ -24,22 +40,6 @@
       }
     }
   }
-
-  .header-title {
-    font-size: 2em;
-    line-height: 1.2;
-    margin-top: 10px;
-    margin-bottom: 20px;
-
-    &.center {
-      text-align: center;
-    }
-
-    @include media-query($on-mobile) {
-      font-size: 1.9em;
-    }
-  }
-}
 
 // Post meta
 .post-meta {
