@@ -11,17 +11,16 @@ tags: [archlinux, fedora, wayland, pipewire]
 
 Entremos en contexto: según la wiki ["sway (WM)"](https://swaywm.org/) es un administrador de ventanas en mosaico y compositor de Wayland, inspirado en i3, y escrito en "C", diseñado como un reemplazo directo para i3 usando el protocolo de servidor de pantalla más moderno ["wayland"](https://gitlab.freedesktop.org/wlroots/wlroots) y la biblioteca de compositores [wlroots](https://gitlab.freedesktop.org/wlroots/wlroots), hasta ahí estamos bien, pero... <mark>que hay de la configuración? funcionalidad? personalización? es bueno para una estacion de trabajo?</mark>
 
-En el poco tiempo que llevo usando este gestor de ventanas en mosaico (3 meses) he notado mucha fluidez a comparación con el servidor x (xorg), ademas de encontrar a la mano herramientas nativas para wayland para capturar y grabar pantalla, así como gestor de portapapeles entre otras cosas útiles, que al final del día hacen mas cómodo el manejo del mismo, lo acompañé de una barra útil con botones y emojis representativos (waybar). Todo lo anterior esta instalando en una laptop con procesador Celeron 2.4Ghz, 4GB Ram y HDD. No conforme con eso le agregue Zram para que estuviera mas veloz 🔥.
+En el poco tiempo que llevo usando este gestor de ventanas en mosaico (3 meses) como estacion de trabajo, usando: suite offimatica, navegador web, editor de texto, reproductor de musica, etc., he notado mucha fluidez a comparación con el servidor x (xorg), ademas de encontrar a la mano herramientas nativas para wayland para capturar y grabar pantalla, así como gestor de portapapeles entre otras cosas útiles, que al final del día hacen mas cómodo el manejo del mismo, lo acompañé de una barra útil con botones y emojis representativos (waybar). Todo lo anterior esta instalando en una laptop con procesador Celeron 2.4Ghz, 4GB Ram y HDD. No conforme con eso le agregue Zram para que estuviera mas veloz 🔥.
 
-**Puede probar mi configuracion siguiendo estos pasos:**
-Puede ejecutar el script de instalacion automatizada que aplicara toda la configuracion y programas adicionales o clonar el repositorio y copiar manualmente los archivos que necesite.
+**Puede probar mi configuracion** ejecutando el script de instalacion automatizada que aplicara toda la configuracion y programas adicionales o clonar el repositorio y copiar manualmente los archivos que necesite.
 
-Ejecute desde 
+Ejecute desde desde terminal: 
 ```bash
 bash <(curl -L is.gd/swayarchmx)
 ```
 
-Ó clone el repositorio 
+Ó clone el repositorio:
 ```bash
 git clone https://github.com/mxhectorvega/sway-arch
 ```
