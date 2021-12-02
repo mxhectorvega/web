@@ -16,9 +16,9 @@ En el poco tiempo que llevo usando este gestor de ventanas en mosaico (3 meses) 
 **Puede probar mi configuracion siguiendo estos pasos:**
 Puede ejecutar el script de instalacion automatizada que aplicara toda la configuracion y programas adicionales o clonar el repositorio y copiar manualmente los archivos que necesite.
 
-- Ejecute desde ```bash <(curl -L is.gd/swayarchmx)```
+1. Ejecute desde ```bash <(curl -L is.gd/swayarchmx)```
 
-- O clone el repositorio ```git clone https://github.com/mxhectorvega/sway-arch```
+2. Ó clone el repositorio ```git clone https://github.com/mxhectorvega/sway-arch```
 
 **Capturas de pantalla:**
 <center>
