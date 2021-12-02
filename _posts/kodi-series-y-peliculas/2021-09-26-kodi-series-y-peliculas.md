@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Kodi, reproductor multimedia que incluye series y peliculas de Netflix."
+title:  "Kodi, reproductor multimedia que incluye series y peliculas."
 date:   2021-09-26 12:00:00 +0700
 tags: [kodi, series, peliculas, linux, windows, macos, ios, android]
 ---
